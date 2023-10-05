@@ -15,7 +15,7 @@ from declarai.operators.templates import (
 
 from .hf_llm import HuggingFaceLLM
 
-logger = logging.getLogger("OpenAITaskOperator")
+logger = logging.getLogger("HuggingFaceTaskOperator")
 
 INPUTS_TEMPLATE = "Inputs:\n{inputs}\n"
 INPUT_LINE_TEMPLATE = "{param}: {{{param}}}"
@@ -23,14 +23,14 @@ NEW_LINE_INPUT_LINE_TEMPLATE = "\n{param}: {{{param}}}"
 
 
 @register_operator(provider="hf", operator_type="task")
-class OpenAITaskOperator(BaseOperator):
+class HuggingFaceTaskOperator(BaseOperator):
     """
     Task implementation for openai operator. This is a child of the BaseOperator class. See the BaseOperator class for further documentation.
     Implements the compile method which compiles a parsed function into a message.
-    Uses the OpenAILLM to generate a response based on the given template.
+    Uses the HuggingFaceLLM to generate a response based on the given template.
 
     Attributes:
-        llm: OpenAILLM
+        llm: HuggingFaceLLM
     """
 
     llm: HuggingFaceLLM
@@ -90,7 +90,7 @@ class OpenAITaskOperator(BaseOperator):
 
     def compile_template(self) -> CompiledTemplate:
         """
-        Unique compilation method for the OpenAITaskOperator class.
+        Unique compilation method for the HuggingFaceTaskOperator class.
         Uses the InstructFunctionTemplate and StructuredOutputInstructionPrompt templates to create a message.
         And the _compile_input_placeholder method to create a placeholder for the input of the function.
         Returns:

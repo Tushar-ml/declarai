@@ -15,12 +15,21 @@ from .openai_operators import (
     OpenAILLM,
     OpenAITaskOperator,
 )
+
+from .hf_operators import (
+    HuggingFaceChatOperator,
+    HuggingFaceLLM,
+    HuggingFaceTaskOperator
+)
+
 from .operator import BaseChatOperator, BaseOperator
 from .registry import llm_registry, operator_registry
 
 # Based on documentation from https://platform.openai.com/docs/models/overview
 ProviderOpenai = "openai"
 ProviderAzureOpenai = "azure-openai"
+ProviderHuggingFace = "hf"
+
 ModelsOpenai = Literal[
     "gpt-4",
     "gpt-3.5-turbo",
@@ -31,7 +40,11 @@ ModelsOpenai = Literal[
 ]
 "All official OpenAI models"
 
-AllModels = Union[ModelsOpenai]
+ModelsHuggingFace = Literal[
+    "NousResearch/Llama-2-7b-hf"
+]
+
+AllModels = Union[ModelsOpenai, ModelsHuggingFace]
 
 
 def resolve_llm(provider: str, model: str = None, **kwargs) -> LLM:

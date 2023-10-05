@@ -12,6 +12,8 @@ from declarai.operators import (
     ModelsOpenai,
     ProviderAzureOpenai,
     ProviderOpenai,
+    ProviderHuggingFace,
+    ModelsHuggingFace,
     llm_registry,
     operator_registry,
     resolve_llm,
