@@ -137,6 +137,16 @@ class Declarai:
     ):
         ...
 
+    @overload
+    def __init__(
+        self, 
+        provider: ProviderHuggingFace,
+        model_name: str,
+        stream: Optional[bool] = None,
+        **kwargs
+    ):
+        ...
+
     def __init__(self, provider: str, model: str, **kwargs):
         self.llm = resolve_llm(provider, model, **kwargs)
         self.task = TaskDecorator(self.llm).task
@@ -221,6 +231,21 @@ def azure_openai(
         request_timeout=request_timeout,
     )
 
+def huggingface(
+        model_name: str,
+        api_key: str = None,
+        headers: dict = None,
+        timeout: int = None,
+        stream: bool = False,
+):
+    return Declarai(
+        provider=ProviderHuggingFace,
+        model=model_name,
+        api_key=api_key,
+        headers=headers,
+        timeout=timeout,
+        stream=stream
+    )
 
 def register_llm(provider: str, llm_cls: Type[LLM], model: str = None):
     """

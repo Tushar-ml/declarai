@@ -18,17 +18,17 @@ class BaseHuggingFaceLLM(BaseLLM):
     provider = "hf"
 
     def __init__(self, api_key: str,
-                 model_name: str,
+                 model: str,
                  stream: bool = False,
                  **kwargs) -> None:
         
-        self.pipeline = pipeline(task="conversational", model=model_name,
-                                 token=api_key)
+        self.pipeline = pipeline(task="conversational", model=model,
+                                 token=api_key, device="mps")
         
         self.api_key = api_key
         self.stream = stream
 
-        self.model = model_name
+        self.model = model
 
         if self.stream:
             raise HuggingFaceError("Currently HuggingFace LLM not supporting streaming output")
@@ -43,7 +43,7 @@ class BaseHuggingFaceLLM(BaseLLM):
         return self.stream
     
     def predict(self, messages: List[Message],
-                temperature: float = 0,
+                temperature: float = 0.9,
                 top_p: float = 1,
                 stream: bool = False):
         
@@ -51,11 +51,12 @@ class BaseHuggingFaceLLM(BaseLLM):
             raise HuggingFaceError("Currently HuggingFace LLM not supporting streaming output")
         
         hf_messages = [{"role": m.role, "content": m.message} for m in messages]
+        print(hf_messages)
         conversation = Conversation(hf_messages)
 
-        res = self.pipeline(conversation, top_p = top_p, temperature = temperature)
+        res = self.pipeline(conversation, top_p = top_p, temperature = temperature, do_sample = True, max_length = 512)
         answer = res.generated_responses[-1]
-
+        print(answer)
         return LLMResponse(
             response=answer
         )
@@ -64,7 +65,7 @@ class BaseHuggingFaceLLM(BaseLLM):
 class HuggingFaceLLM(BaseHuggingFaceLLM):
 
     def __init__(self,
-                 model_name: str,
+                 model: str,
                  api_key: str = None, 
                  stream: bool = False, 
                  **kwargs) -> None:
@@ -78,7 +79,7 @@ class HuggingFaceLLM(BaseHuggingFaceLLM):
                 "the API key via the init interface."
             )
         
-        super().__init__(api_key, model_name, stream, **kwargs)
+        super().__init__(api_key, model, stream, **kwargs)
 
 class HuggingFaceLLMParams(BaseLLMParams):
 

@@ -1,6 +1,6 @@
 import declarai
 
-gpt_35 = declarai.
+gpt_35 = declarai.huggingface("gpt2")
 
 @gpt_35.task
 def generate_poem(a: int, b: int) -> int:
